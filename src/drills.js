@@ -31,6 +31,18 @@ function paginateItems(pageNumber) {
     .finally(() => knexInstance.destroy());
 }
 
+function itemsAddedAfter(daysAgo) {
+    knexInstance('shopping_list')
+        .select('*')
+        .where(
+            'date_added',
+            '>',
+            knexInstance.raw('now() - \'?? days\'::INTERVAL', daysAgo)
+        )
+}
+
+itemsAddedAfter(5);
+
 // paginateItems(3);
 
 // getAllTextItems('fish');
