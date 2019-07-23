@@ -32,16 +32,33 @@ function paginateItems(pageNumber) {
 }
 
 function itemsAddedAfter(daysAgo) {
-    knexInstance('shopping_list')
-        .select('*')
-        .where(
-            'date_added',
-            '>',
-            knexInstance.raw('now() - \'?? days\'::INTERVAL', daysAgo)
-        )
+  knexInstance('shopping_list')
+    .select('*')
+    .where(
+      'date_added',
+      '>',
+      knexInstance.raw('now() - \'?? days\'::INTERVAL', daysAgo)
+    )
+    .then(result => {
+      console.log(result);
+    })
+    .catch(err => console.log(err.message))
+    .finally(() => knexInstance.destroy());
 }
 
-itemsAddedAfter(5);
+function categoryTotalCost() {
+  knexInstance('shopping_list')
+    .select('category')
+    .sum('price as total')
+    .groupBy('category')
+    .then(result => console.log(result))
+    .catch(err => console.log(err.message))
+    .finally(() => knexInstance.destroy());
+}
+
+categoryTotalCost();
+
+// itemsAddedAfter(1);
 
 // paginateItems(3);
 
